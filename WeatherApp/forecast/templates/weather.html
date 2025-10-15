@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% load static %}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+  <link rel="icon" href="{% static 'img/site-pic.ico' %}" type="image/icon type"/>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <title>Weather Forecast</title>
+</head>
+<body>
+  <main class="{{ description }}">
+    <section class="side-container">
+        <form method="POST">
+          {% csrf_token %}
+          <div class="search-container">
+            <div style="width: 22px; height: 22px; color: white;" class="weather-icon">
+              <i class="bi bi-cloud-fill"></i>
+            </div>
+            <input
+              type="text"
+              name="city"
+              class="geo-input"
+              placeholder="ex. Delhi"
+              value="{{ location }}"
+              required
+            />
+            <button type="submit" class="search-button">
+              <div style="width: 25px; height: 25px; color: white;">
+                <i class="bi bi-search"></i>
+              </div>
+            </button>
+          </div>
+        </form>
+        {% if current_temp %}
+        <div class="current-temp-display">
+          <h2 class="current-temp-value">{{ current_temp }}°C</h2>
+          <h3 class="feels-like-value">Feels like {{ feels_like }}°C</h3>
+          <p class="humidity-value">Humidity: {{ humidity }}%</p>
+          <p class="clouds-value">Clouds: {{ clouds }}%</p>
+          <p class="rain-probability">Rain Probability: {{ rain_probability }}%</p>
+        </div>
+        {% endif %}
+        <div class="day-stats">
+          {% if current_temp %}
+          <h2 class="day-stats__temperature">
+            <span class="day-stats__temperature_value">{{ current_temp }}°C</span>
+          </h2>
+          <h3 class="day-stats__feelslike">
+            Feels like:&nbsp&nbsp<span class="day-stats__feelslike_value">{{ feels_like }}°C</span>
+          </h3>
+          <ul class="day-stats_conditions">
+            <li>
+              <p class="day-stats_condition">
+                <span class="day-stats__humidity">{{ humidity }}</span>%
+              </p>
+              <p class="day-stats__condition_text">Humidity</p>
+            </li>
+            <li>
+              <p class="day-stats_condition">
+                <span class="day-stats__clouds">{{ clouds }}</span>%
+              </p>
+              <p class="day-stats__conditions_text">Clouds</p>
+            </li>
+          </ul>
+          {% endif %}
+        </div>
+        <img class="side-blur " src="{% static 'img/side-blur.png' %}" alt="blur"/>
+    </section>
+
+    <section class="main-container">
+      {% if current_temp %}
+      <h4 class="secondary-title">Weather Forecast</h4>
+      <h1 class="weather__primary-title">{{ description }}</h1>
+      <div class="weather__location">
+        <div style="width: 15px; height: 15px; color: white;" class="location-icon">
+          <i class="bi bi-geo-alt-fill"></i>
+      </div>
+      <p class="weather__location-text">
+        <span class="weather__location-city">{{ city }}</span>
+        <span class="weather__location-country">{{ country }}</span>
+        <span class="weather__location-date">{{ time }}</span>
+      </p>
+      </div>
+      <p class="weather__primary-stats">
+        Wind
+        <span class="weatherwindkmph">{{ wind }}</span> kilometers per hour. Pressure
+        is <span class="weatherPressure">{{ pressure }}</span> mb. Visibility is
+        <span class="weatherSnow">{{ visibility }}</span> meters. Maximum temperature
+        today is <span class="weatherMaxTemp">{{ MaxTemp }}</span>°C and minimum
+        temperature is <span class="weatherMinTemp">{{ MinTemp }}</span>°C.
+      </p>
+      {% endif %}
+
+      {% if current_temp %}
+      <ul class="forecast">
+        <li class="forecast-item">
+          <p class="forecast-time">{{ time1 }}</p>
+          <p class="forecast-temperature">
+            &nbsp;<span class="forecast-temperatureValue">{{ temp1 }}</span>
+          </p>
+          <p class="forecastWindText">
+            Humidity: <span class="forecast-humidityValue">{{ hum1 }}</span>% 
+          </p>
+        </li>
+        <li class="forecast-item">
+          <p class="forecast-time">{{ time2 }}</p>
+          <p class="forecast-temperature">
+            &nbsp;<span class="forecast-temperatureValue">{{ temp2 }}</span>
+          </p>
+          <p class="forecastWindText">
+            Humidity: <span class="forecast-humidityValue">{{ hum2 }}</span>% 
+          </p>
+        </li>
+        <li class="forecast-item">
+          <p class="forecast-time">{{ time3 }}</p>
+          <p class="forecast-temperature">
+            &nbsp;<span class="forecast-temperatureValue">{{ temp3 }}</span>
+          </p>
+          <p class="forecastWindText">
+            Humidity: <span class="forecast-humidityValue">{{ hum3 }}</span>% 
+          </p>
+        </li>
+        <li class="forecast-item">
+          <p class="forecast-time">{{ time4 }}</p>
+          <p class="forecast-temperature">
+            &nbsp;<span class="forecast-temperatureValue">{{ temp4 }}</span>
+          </p>
+          <p class="forecastWindText">
+            Humidity: <span class="forecast-humidityValue">{{ hum4 }}</span>% 
+          </p>
+        </li>
+        <li class="forecast-item">
+          <p class="forecast-time">{{ time5 }}</p>
+          <p class="forecast-temperature">
+            &nbsp;<span class="forecast-temperatureValue">{{ temp5 }}</span>
+          </p>
+          <p class="forecastWindText">
+            Humidity: <span class="forecast-humidityValue">{{ hum5 }}</span>% 
+          </p>
+        </li>
+      </ul>
+      {% endif %}
+
+      {% if current_temp %}
+      <!-- Subtle Temperature Trend Line -->
+      <div style="width: 100%; height: 60px; margin-top: 20px; position: relative;">
+        <canvas id="temperatureChart" style="width: 100%; height: 100%;"></canvas>
+      </div>
+      {% endif %}
+    </section>
+  </main>
+  <!-- Chart.js Library -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  {% if current_temp %}
+  <!-- Temperature Chart Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get the canvas element
+      const ctx = document.getElementById('temperatureChart').getContext('2d');
+      
+      // Temperature data from Django template
+      const temperatureData = [
+        { time: '{{ time1 }}', temp: {{ temp1_num }} },
+        { time: '{{ time2 }}', temp: {{ temp2_num }} },
+        { time: '{{ time3 }}', temp: {{ temp3_num }} },
+        { time: '{{ time4 }}', temp: {{ temp4_num }} },
+        { time: '{{ time5 }}', temp: {{ temp5_num }} }
+      ];
+      
+      const times = temperatureData.map(item => item.time);
+      const temps = temperatureData.map(item => parseFloat(item.temp));
+      
+      console.log('Chart data:', { times, temps });
+      
+      // Create minimal temperature trend line with hover dots
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: times,
+          datasets: [{
+            data: temps,
+            borderColor: '#FF8A65',
+            backgroundColor: 'transparent',
+            borderWidth: 2,
+            pointRadius: 3,
+            pointBackgroundColor: '#FF8A65',
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 1,
+            pointHoverRadius: 6,
+            pointHoverBackgroundColor: '#FF6B35',
+            pointHoverBorderColor: '#ffffff',
+            pointHoverBorderWidth: 2,
+            tension: 0.4,
+            fill: false
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            intersect: false,
+            mode: 'point'
+          },
+          layout: {
+            padding: {
+              left: 0,
+              right: 0,
+              top: 10,
+              bottom: 10
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
+            },
+            tooltip: {
+              enabled: true,
+              backgroundColor: 'rgba(0, 0, 0, 0.8)',
+              titleColor: '#ffffff',
+              bodyColor: '#ffffff',
+              borderColor: '#FF8A65',
+              borderWidth: 1,
+              cornerRadius: 8,
+              displayColors: false,
+              padding: 8,
+              titleFont: {
+                size: 12,
+                weight: 'bold'
+              },
+              bodyFont: {
+                size: 11
+              },
+              callbacks: {
+                title: function(context) {
+                  return context[0].label;
+                },
+                label: function(context) {
+                  return context.parsed.y + '°C';
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              display: false,
+              grid: {
+                display: false
+              }
+            },
+            y: {
+              display: false,
+              grid: {
+                display: false
+              }
+            }
+          },
+          elements: {
+            line: {
+              borderJoinStyle: 'round',
+              borderCapStyle: 'round'
+            }
+          },
+          animation: {
+            duration: 1500,
+            easing: 'easeInOutQuart'
+          }
+        }
+      });
+    });
+  </script>
+  {% endif %}
+</body>
+</html>
