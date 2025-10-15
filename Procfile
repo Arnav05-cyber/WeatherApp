@@ -1,1 +1,1 @@
-web: gunicorn WeatherApp.wsgi --log-file -
+web: cd WeatherApp && gunicorn WeatherApp.wsgi:application --bind 0.0.0.0:$PORT
