@@ -24,8 +24,7 @@ The app features a sleek, modern interface with:
 - **Backend**: Django 5.2.7
 - **Frontend**: HTML5, CSS3, JavaScript
 - **Charts**: Chart.js
-- **Machine Learning**: scikit-learn (Random Forest)
-- **Data Processing**: pandas, numpy
+- **Weather Forecasting**: Simple statistical predictions
 - **Weather API**: OpenWeatherMap API
 - **Icons**: Bootstrap Icons
 
@@ -57,7 +56,7 @@ The app features a sleek, modern interface with:
 
 3. **Install dependencies**
    ```bash
-   pip install django requests pandas numpy scikit-learn pytz
+   pip install django requests pytz gunicorn whitenoise
    ```
 
 4. **Set up the project**
